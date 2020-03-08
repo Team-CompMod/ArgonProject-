@@ -1,113 +1,120 @@
 """
-CompMod Ex2: Particle3D, a class to describe a particle in 3D space
+Phoebe O'Carroll-Moran, s1624742
+CMod Ex2: Particle 3D, a class to describe the properties of a 3D particle
 
-Callum Moore s1722906
 """
+
 import numpy as np
- 
-class Particle3D(object):
+
+class Particle3D:
     """
-    Class to describe particles in 3D space
+       Class to describe 3D particles.
 
-    Properties:
-    label(str) - label of particle
-    mass(float) - mass of particle
-    position(array) - postion of particle in 3D space
-    Velocity(array) - velocity in x, y and z directions
+       Properties:
+       position(float) - an array containing the position component along all 3 axes
+       velocity(float) - an array containing the velocity component along all 3 axes
+       mass(float) - particle mass
 
-    Methods:
-    *formatted output
-    *kinetic energy
-    *velocity update
-    *first and second order position update
-    """
-
-    def __init__(self, lab, mass):
+       Methods:
+       * formatted output
+       * kinetic energy
+       * first-order velocity update
+       * first- and second order position updates
+       * reading data from a file and using it to create and instance of a particle
+       * finding the relative  vector separation of two particles
+       """
+       
+    def __init__(self,label,mass):
         """
         Initialise a Particle3D instance
-        
-        :param label: label as string
+    
+        :param pos: position as float
+        :param vel: velocity as float
         :param mass: mass as float
         """
-        self.label = lab
+
+        self.label = label
+        
         self.mass = mass
 
 
     def __str__(self):
+        return str(self.label) + " " + str(self.position[0]) + " "  + str(self.position[1]) + " " + str(self.position[2])
         """
-        Define output format
-        for particle p=(p1, [1.0, 2.0, 3.0], [velocity], mass) this will print
-        "label = p1, x = 1.0, y = 2.0, z = 3.0"
+        return a string setting out the parameters
         """
-        return  self.label + " " + str(self.position[0]) + " " + str(self.position[1]) + " " + str(self.position[2])
-
-
+            
     def kinetic_energy(self):
         """
         Return kinetic energy as
         1/2*mass*vel^2
         """
-        print(self.mass)
-        print(np.inner(self.velocity,self.velocity))
-        return 0.5*self.mass*np.inner(self.velocity,self.velocity)
-
-
-    def leap_velocity(self,dt, force):
+        
+        return 0.5*self.mass*np.linalg.norm(self.velocity)**2
+    
+    def update_velocity(self,dt,force):
         """
         First-order velocity update,
         v(t+dt) = v(t) + dt*F(t)
 
         :param dt: timestep as float
-        :param force: force on particle as numpy array
+        :param force: force on particle as float
         """
         self.velocity += dt*force/self.mass
-
-
-    def leap_pos1st(self, dt):
+        return self.velocity
+        
+    def update_position1(self, dt):
         """
         First-order position update,
         x(t+dt) = x(t) + dt*v(t)
 
         :param dt: timestep as float
         """
-        self.position += dt*self.velocity
-
         
-    def leap_pos2nd(self, dt, force):
+        self.position +=  dt*self.velocity
+        return self.position
+    
+    def update_position2(self, dt, force):
         """
         Second-order position update,
         x(t+dt) = x(t) + dt*v(t) + 1/2*dt^2*F(t)
 
         :param dt: timestep as float
-        :param force: current force as numpy array
+        :param force: current force as float
         """
-        self.position += dt*self.velocity + 0.5*dt**2*force/self.mass
         
-    
+        self.position += dt*self.velocity + (dt**2)*force/2*self.mass
+        return self.position
+        
 
     @staticmethod
-    def from_file(filename):
-        """
-        Creates particle from file
+    def from_file(file_handle):
+        file_handle = open(file_handle,"r")
         
-        :param filename: file name as string
-        """
+        line = file_handle.readline()
+        data  = line.split(",")
         
-        file = open(filename, "r")
-        
-        lines = file.readlines()
-        file.close()
-        pos = np.array([float(lines[1]), float(lines[2]), float(lines[3])])
-        vel = np.array([float(lines[4]), float(lines[5]), float(lines[6])])
-        
-        return Particle3D(lines[0], pos, vel, float(lines[7]))
+        pos = map(float, data[0:3])
+        pos = np.array(list(pos))
+        print(pos)
+        vel = map(float, data[3:6])
+        vel = np.array(list(vel))
+        print(vel)
+        mass = float(data[7])
+        print(mass)
+        label = str(data[8])
+      
+        return Particle3D(pos,label,vel,mass)
 
     @staticmethod
-    def separation(p1, p2):
+    def subtract(p1,p2):
         """
-        Finds vector separtion between two vectors p1 and p2
-        
-        :param p1: 1st particle
-        :param p2: 2nd particle 
+        Relative vector separation of the two particles
+        :param p1: particle 1
+        :param p2: particle 2
         """
-        return p1.position - p2.position
+        r1 = p1.position
+        r2 = p2.position
+        sep =  r1 - r2
+        return sep
+
