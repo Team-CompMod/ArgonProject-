@@ -32,7 +32,7 @@ def LJ_force(particle,box_size,cutoff):
             if norm_rij > cutoff:
                 force_i = 0
             else:
-                force_i = 48*((1/norm_rij)**14 - ((1/2)*((1/norm_rij)**8)))*mic_rij/norm_rij
+                force_i = 48*((1/norm_rij)**14 - ((1/2)*((1/norm_rij)**8)))*(mic_rij)
             force[i] += force_i
             force[j] += -force_i
     

@@ -10,7 +10,7 @@ import numpy as np
 from numpy import linalg as LA
 from observables import *
 
-def LJ_force(particle,box_size,cutoff,sigma):
+def LJ_force(particle,box_size,cutoff):
 
     """
     Calculates force due to Lennard-Jones interactions
@@ -24,15 +24,15 @@ def LJ_force(particle,box_size,cutoff,sigma):
     
     N = len(particle)
     force = np.zeros(N, dtype = object)
-    for i in range(N-1):
+    for i in range(N):
         for j in range(i+1,N):
-            rij = (particle[i].position - particle[j].position)/sigma
+            rij = (particle[i].position - particle[j].position)
             mic_rij = mic(rij,box_size)
             norm_rij = LA.norm(mic_rij)
             if norm_rij > cutoff:
                 force_i = 0
             else:
-                force_i = 48*((1/norm_rij)**14 - ((1/2)*((norm_rij)**8)))*rij
+                force_i = 48*((1/norm_rij)**14 - ((1/2)*((1/norm_rij)**8)))*mic_rij/norm_rij
             force[i] += force_i
             force[j] += -force_i
     
@@ -40,7 +40,7 @@ def LJ_force(particle,box_size,cutoff,sigma):
         
 
          
-def LJ_potential(particle,box_size,cutoff,sigma):
+def LJ_potential(particle,box_size,cutoff):
 
     """
     Calculates Lennard-Jones potential.
@@ -52,25 +52,22 @@ def LJ_potential(particle,box_size,cutoff,sigma):
 
     """
     N = len(particle)
-    potential = np.zeros(N)
+    potential = 0.0
 # need to apply reduced units here
     for i in range(N):
         for j in range (i+1, N):
         
         # apply minimum image convention to both (what box size do we use?)
-            rij = (particle[i].position - particle[j].position)/sigma
+            rij = (particle[i].position - particle[j].position)
             mic_rij = mic(rij,box_size)
             norm_rij = LA.norm(mic_rij)
             #print(norm_rij)
             if norm_rij > cutoff:
-                potential_i = 0
+                potential += 0
             else:
-                potential_i = 4*((1/norm_rij)**12 - (1/norm_rij)**6)
-            potential[i] += potential_i
-            potential[j] += -potential_i
-        potential_sum = np.sum(potential)
+                potential += 4*((1/norm_rij)**12 - (1/norm_rij)**6)
         
-    return(potential_sum)
+    return(potential)
                
 def LJ_kinetic(particle):
 
