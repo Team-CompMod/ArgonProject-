@@ -28,29 +28,24 @@ def main():
         
     #setup simulation parameters
     
-        particle_num = input("Enter your preferred number of particles: ")
-        particle_num = int(particle_num)
-        temp = input("Enter simulation temperature (in Kelvin): ")
-        temp = float(temp)
+        #particle_num = input("Enter your preferred number of particles: ")
+        #particle_num = int(particle_num)
+        #temp = input("Enter simulation temperature (in Kelvin): ")
+        #temp = float(temp)
     
     # get parameters from text file
         paramsfile = open(params_filename, "r")
         paramslines = paramsfile.readlines()
         paramsfile.close()
-    
-        rho = float(paramslines[0])
-        temp_coeff = float(paramslines[1])
-        cutoff = float(paramslines[2])
-        step_num = int(paramslines[3])
-        dt = float(paramslines[4])
-        epsilon_boltzmann = float(paramslines[5])
-        sigma = float(paramslines[6])
-        mass = float(paramslines[7])
-        time_coeff = float(paramslines[8])
-    
-        dt = time_coeff*dt
-        temp = temp*temp_coeff
-    
+        
+        particle_num = int(paramslines[0])
+        rho = float(paramslines[1])
+        temp = float(paramslines[2])
+        cutoff = float(paramslines[3])
+        step_num = int(paramslines[4])
+        dt = float(paramslines[5])
+
+        mass = 1.0
     #setup particles
         particles = []
         for x in range(int(particle_num)):
@@ -66,14 +61,16 @@ def main():
         outfile.write(str(particle_num)+  "\n")
         outfile.write("Point = 0\n")
         for particle in particles:
-            outfile.write(str(particle)+ '\n')
+                outfile.write(str(particle)+ '\n')
         
     
     #get initial force and potential
-        forces = LJ.LJ_force(particles, box[0], cutoff, sigma)
-        potential = LJ.LJ_potential(particles, box[0], cutoff, sigma)
+        forces = LJ.LJ_force(particles, box[0], cutoff)
+        potential = LJ.LJ_potential(particles, box[0], cutoff)
         kinetic = LJ.LJ_kinetic(particles)
-
+        print(particles[0].velocity)
+        print(particles[0].kinetic_energy())
+        print(kinetic)
     #initalise information to data lists
         time = 0
         time_list = [time]
@@ -91,8 +88,8 @@ def main():
         
         # update force
             new_kinetic = LJ.LJ_kinetic(particles)
-            new_forces = LJ.LJ_force(particles, box[0], cutoff,sigma)
-            new_potential = LJ.LJ_potential(particles,box[0],cutoff,sigma)
+            new_forces = LJ.LJ_force(particles, box[0], cutoff)
+            new_potential = LJ.LJ_potential(particles,box[0],cutoff)
 
         # update particle velocity by averaging
         # current and new forces
@@ -108,33 +105,33 @@ def main():
             time_list.append(time)
             potential_list.append(new_potential)
             kinetic_list.append(new_kinetic)
-      
+            
     #Post-simulation:
     #close output file
         outfile.close()
         energy_list  = np.add(potential_list,kinetic_list)
+        
+        # create three subplots
     
-    # create three subplots
-    
-        fig, axs = plt.subplots(2, 1, constrained_layout = True)
+        fig, axs = plt.subplots(3, 1, constrained_layout = True)
         axs[0].plot(time_list, potential_list,'-')
         axs[0].set_title('Time vs. Potential Energy')
         axs[0].set_xlabel('Time')
         axs[0].set_ylabel('Potential Energy')
         fig.suptitle('ParticleManyBody data', fontsize=16)
 
-    # plot time and energy to second subplot
+        # plot time and energy to second subplot
         axs[1].plot(time_list, kinetic_list, '-')
         axs[1].set_xlabel('Time')
         axs[1].set_title('Time vs. Kinetic Energy')
         axs[1].set_ylabel('Kinetic Energy')
     
-        #axs[2].plot(time_list, energy_list, '-')
-        #axs[2].set_xlabel('Time')
-        #axs[2].set_title('Time vs. Total Energy')
-        #axs[2].set_ylabel('Total Energy')
-        #plt.show()
-    
+        axs[2].plot(time_list, energy_list, '-')
+        axs[2].set_xlabel('Time')
+        axs[2].set_title('Time vs. Total Energy')
+        axs[2].set_ylabel('Total Energy')
+        plt.show()
+ 
 # Execute main method, but only when directly invoked
 if __name__ == "__main__":
     main()

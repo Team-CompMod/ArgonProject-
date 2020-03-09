@@ -12,6 +12,8 @@ from Particle3D import Particle3D
 import Lennard_Jones as LJ
 import MDUtilities
 import matplotlib.pyplot as plt
+import observables as obs
+import copy
 #from tqdm import tqdm
 
 
@@ -53,7 +55,9 @@ def main():
         
         box = MDUtilities.set_initial_positions(rho, particles)
         MDUtilities.set_initial_velocities(temp, particles)
- 
+        
+        inital_particles = copy.deepcopy(particles)
+        
     #open output file
         outfile = open(outfile_name, "w")
 
@@ -68,14 +72,15 @@ def main():
         forces = LJ.LJ_force(particles, box[0], cutoff)
         potential = LJ.LJ_potential(particles, box[0], cutoff)
         kinetic = LJ.LJ_kinetic(particles)
-        print(particles[0].velocity)
-        print(particles[0].kinetic_energy())
-        print(kinetic)
+
+        msd = obs.msd(particles, inital_particles)
+
     #initalise information to data lists
         time = 0
         time_list = [time]
         potential_list = [potential]
         kinetic_list = [kinetic]
+        msd_list = [msd]
 
         #start the time integration loop
         for i in range(step_num):
@@ -90,6 +95,7 @@ def main():
             new_kinetic = LJ.LJ_kinetic(particles)
             new_forces = LJ.LJ_force(particles, box[0], cutoff)
             new_potential = LJ.LJ_potential(particles,box[0],cutoff)
+            new_msd = obs.msd(particles, inital_particles)
 
         # update particle velocity by averaging
         # current and new forces
@@ -105,6 +111,7 @@ def main():
             time_list.append(time)
             potential_list.append(new_potential)
             kinetic_list.append(new_kinetic)
+            msd_list.append(new_msd)
             
     #Post-simulation:
     #close output file
@@ -113,7 +120,7 @@ def main():
         
         # create three subplots
     
-        fig, axs = plt.subplots(3, 1, constrained_layout = True)
+        fig, axs = plt.subplots(4, 1, constrained_layout = True)
         axs[0].plot(time_list, potential_list,'-')
         axs[0].set_title('Time vs. Potential Energy')
         axs[0].set_xlabel('Time')
@@ -129,7 +136,12 @@ def main():
         axs[2].plot(time_list, energy_list, '-')
         axs[2].set_xlabel('Time')
         axs[2].set_title('Time vs. Total Energy')
-        axs[2].set_ylabel('Total Energy')
+        axs[2].set_ylabel('Total Energy') 
+
+        axs[3].plot(time_list, msd_list, '-')
+        axs[3].set_xlabel('Time')
+        axs[3].set_title('Time vs. Mean Squared Displacement')
+        axs[3].set_ylabel('MSD')
         plt.show()
  
 # Execute main method, but only when directly invoked
