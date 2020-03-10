@@ -46,6 +46,7 @@ def main():
         cutoff = float(paramslines[3])
         step_num = int(paramslines[4])
         dt = float(paramslines[5])
+        bin_num = int(paramslines[6])
 
         mass = 1.0
     #setup particles
@@ -81,9 +82,17 @@ def main():
         potential_list = [potential]
         kinetic_list = [kinetic]
         msd_list = [msd]
-
+        
+        #set up rdf bin size and lists
+        bin_size = box[0]/bin_num
+        bin_list = np.zeros(bin_num)
+        bin_locations = []
+        for i in range(bin_num):
+                bin_locations.append(i*bin_size - bin_size/2)
+        
         #start the time integration loop
         for i in range(step_num):
+            print(i)
             #update particle positions are write new positions to file
             outfile.write(str(particle_num)+  "\n")
             outfile.write("Point = " + str(i+1)+  "\n")
@@ -108,6 +117,8 @@ def main():
             time += dt
 
         #append data to lists
+            if i%5 == 0:
+                    obs.rdf(particles, bin_list, bin_size)
             time_list.append(time)
             potential_list.append(new_potential)
             kinetic_list.append(new_kinetic)
@@ -118,9 +129,13 @@ def main():
         outfile.close()
         energy_list  = np.add(potential_list,kinetic_list)
         
+        #normalise rdf histogram
+        for i in range(len(bin_list)):
+                bin_list[i] = bin_list[i]/(4*math.pi*rho*(i*bin_size + bin_size/2)*bin_size)
+        
         # create three subplots
     
-        fig, axs = plt.subplots(4, 1, constrained_layout = True)
+        fig, axs = plt.subplots(5, 1, constrained_layout = True)
         axs[0].plot(time_list, potential_list,'-')
         axs[0].set_title('Time vs. Potential Energy')
         axs[0].set_xlabel('Time')
@@ -128,6 +143,7 @@ def main():
         fig.suptitle('ParticleManyBody data', fontsize=16)
 
         # plot time and energy to second subplot
+        
         axs[1].plot(time_list, kinetic_list, '-')
         axs[1].set_xlabel('Time')
         axs[1].set_title('Time vs. Kinetic Energy')
@@ -142,6 +158,11 @@ def main():
         axs[3].set_xlabel('Time')
         axs[3].set_title('Time vs. Mean Squared Displacement')
         axs[3].set_ylabel('MSD')
+        
+        axs[4].plot(bin_locations, bin_list, '-')
+        axs[4].set_xlabel('Position')
+        axs[4].set_title('RDF')
+        axs[4].set_ylabel('Count?')
         plt.show()
  
 # Execute main method, but only when directly invoked

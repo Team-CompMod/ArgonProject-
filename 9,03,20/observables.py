@@ -50,6 +50,17 @@ def msd(particles,particle0):
         final_msd += msd
         
     return final_msd
+
+def rdf(particles, bin_list, bin_size):
+    N  = len(particles)
+    for i in range (N):
+        for j in range (i+1,N):
+            distance = np.linalg.norm(particles[i].position - particles[j].position)
+            for k in range(len(bin_list)):
+                if distance>k*bin_size and distance<=(k+1)*bin_size:
+                    bin_list[k]+= 1
+
+
     
         
     

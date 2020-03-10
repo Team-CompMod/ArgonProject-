@@ -44,7 +44,7 @@ def msd(particles,particle0):
     final_msd = 0
     N = len(particles)
     for i in range(N):
-        msd_sqrt = np.mod(particle[i].position - particle0.position)
+        msd_sqrt = np.linalg.norm(particles[i].position - particle0[i].position)
         msd = ((msd_sqrt)**2)/N #needs cleaning up
         
         final_msd += msd
