@@ -117,8 +117,8 @@ def main():
             time += dt
 
         #append data to lists
-            if i%5 == 0:
-                    obs.rdf(particles, bin_list, bin_size)
+            if i%5 == 0 and i/step_num >= 0.5:
+                    obs.rdf(particles, bin_list, bin_size, box[0])
             time_list.append(time)
             potential_list.append(new_potential)
             kinetic_list.append(new_kinetic)
@@ -131,7 +131,7 @@ def main():
         
         #normalise rdf histogram
         for i in range(len(bin_list)):
-                bin_list[i] = bin_list[i]/(4*math.pi*rho*(i*bin_size + bin_size/2)*bin_size)
+                bin_list[i] = bin_list[i]/((4*math.pi*(step_num/10)*rho*((i*bin_size + bin_size/2)**2)*bin_size)*(particle_num/2))
         
         # create three subplots
     
