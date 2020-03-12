@@ -125,7 +125,7 @@ def main():
     for i in range(len(bin_list)):
             bin_list[i] = bin_list[i]/((4*math.pi*(step_num/10)*rho*((i*bin_size + bin_size/2)**2)*bin_size)*(particle_num/2))
         
-        # create three subplots
+        # create five subplots
     
     fig, axs = plt.subplots(5, 1, constrained_layout = True)
     axs[0].plot(time_list, potential_list,'-')
