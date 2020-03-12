@@ -3,8 +3,9 @@ Computer Modelling Semester 2 Project Source Code
 Phoebe O'Carroll-Moran - s1624742
 Callum Moore - s1722906
 
-This code can be used to simulate  N-body systems of particles interacting under a number of user-defined conditions. This file contains:
+This code can be used to simulate  N-body systems of particles interacting under a number of user-defined conditions. This file contains:  
     - Lennard_Jones.py - contains function for finding force, potential and kinetic energy in an N-body system.
+    - MDUtilities - initialises particles in a lattice
     - ParticleManyBody.py - our main function. Uses MDUtilities to set up lattices and initialise particles within those lattices. One is used as a reference while we update the position and velocity of particles in the other lattice.
     - observables.py - contains function for applying periodic bundary conditions and minimum image convention and for finding mean squared distance and radial distribution.
     - Particle3D.py - contains class that creates our particles.
