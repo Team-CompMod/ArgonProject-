@@ -12,7 +12,7 @@ def pbc(x,scalar):
 
     """
     Applies periodic boundary conditions to particles
-    :param x:
+    :param x: 
     :param scalar:
  
     """
@@ -28,7 +28,7 @@ def mic(x,l):
 
     """
     Finds nearest image of particle
-    :param x:
+    :param x: 
     :param l:
 
     """
@@ -37,7 +37,7 @@ def mic(x,l):
 
 def msd(particles,particle0):
     """
-    :param particles:
+    :param particles: list of Particle3D objects 
     :param particle0:
     """
 
@@ -50,6 +50,23 @@ def msd(particles,particle0):
         final_msd += msd
         
     return final_msd
+
+def rdf(particles, bin_list, bin_size):
+    
+    """
+    Finds number of instances of particles in certain regular radial distances and tallies results.
+    :param particles: list of Particle3D objects.
+    :param bin_list:
+    :param bin_size: 
+    
+    """
+    N  = len(particles)
+    for i in range (N):
+        for j in range (i+1,N):
+            distance = np.linalg.norm(particles[i].position - particles[j].position)
+            for k in range(len(bin_list)):
+                if distance>k*bin_size and distance<=(k+1)*bin_size:
+                    bin_list[k]+= 1
 
         
     
