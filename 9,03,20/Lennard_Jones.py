@@ -50,6 +50,7 @@ def LJ_potential(particle,box_size,cutoff):
 
     """
     N = len(particle)
+    
     potential = 0.0
     
     for i in range(N):
