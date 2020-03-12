@@ -28,8 +28,8 @@ def mic(x,l):
 
     """
     Finds nearest image of particle
-    :param x: 
-    :param l:
+    :param x: 3-component distance vector between 2 particles
+    :param l: length of side of box
 
     """
     halfbox = np.array([l/2,l/2,l/2])
@@ -38,7 +38,8 @@ def mic(x,l):
 def msd(particles,particle0):
     """
     :param particles: list of Particle3D objects 
-    :param particle0:
+    :param particle0: reference list of Particle3D objects
+    
     """
 
     final_msd = 0
@@ -56,7 +57,7 @@ def rdf(particles, bin_list, bin_size):
     """
     Finds number of instances of particles in certain regular radial distances and tallies results.
     :param particles: list of Particle3D objects.
-    :param bin_list:
+    :param bin_list: 
     :param bin_size: 
     
     """
