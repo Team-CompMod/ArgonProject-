@@ -84,8 +84,7 @@ def main():
         
         #start the time integration loop
     for i in range(step_num):
-        print(i)
-            #update particle positions are write new positions to file
+           #update particle positions are write new positions to file
         outfile.write(str(particle_num)+  "\n")
         outfile.write("Point = " + str(i+1)+  "\n")
         for j in range(len(particles)):
