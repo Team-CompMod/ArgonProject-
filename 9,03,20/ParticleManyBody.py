@@ -126,6 +126,8 @@ def main():
             bin_list[i] = bin_list[i]/((4*math.pi*(step_num/10)*rho*((i*bin_size + bin_size/2)**2)*bin_size)*(particle_num/2))
         
         # create five subplots
+      
+    # plot time and potential energy to subplot
     
     fig, axs = plt.subplots(5, 1, constrained_layout = True)
     axs[0].plot(time_list, potential_list,'-')
@@ -134,23 +136,29 @@ def main():
     axs[0].set_ylabel('Potential Energy')
     fig.suptitle('ParticleManyBody data', fontsize=16)
 
-        # plot time and energy to second subplot
+    # plot time and kinetic energy to subplot
         
     axs[1].plot(time_list, kinetic_list, '-')
     axs[1].set_xlabel('Time')
     axs[1].set_title('Time vs. Kinetic Energy')
     axs[1].set_ylabel('Kinetic Energy')
     
+    # plot time and total energy to subplot
+    
     axs[2].plot(time_list, energy_list, '-')
     axs[2].set_xlabel('Time')
     axs[2].set_title('Time vs. Total Energy')
     axs[2].set_ylabel('Total Energy') 
 
+    # plot time and mean squared distribution to subplot 
+    
     axs[3].plot(time_list, msd_list, '-')
     axs[3].set_xlabel('Time')
     axs[3].set_title('Time vs. Mean Squared Displacement')
     axs[3].set_ylabel('MSD')
         
+    # plot radial distribution to subplot 
+    
     axs[4].plot(bin_locations, bin_list, '-')
     axs[4].set_xlabel('Position')
     axs[4].set_title('RDF')
