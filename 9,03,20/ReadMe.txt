@@ -27,9 +27,9 @@ Number of histogram bins
 
 Users will need to convert regular units to reduced units. 
 
-- Density: To convert from density (m^3), multiply by 5.95E-4.
+- Density: To convert from density (kg/m^3), multiply by 5.95E-4.
 - Temperature: to convert from Kelvin to reduced units, divide through by 119.8.
 - Cutoff distance: convert from standard units of distance to reduced units, divide by 3.405E-10.
-- Timestep: to convert from seconds to reduced units, multiply by 1.103E-5.
+- Timestep: to convert from seconds to reduced units, multiply by 4.637E-12.
 
 We hope you enjoy reading this as much as we did coding it!
