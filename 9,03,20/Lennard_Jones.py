@@ -17,9 +17,8 @@ def LJ_force(particle,box_size,cutoff):
      
     :param particle: list of Particle3D objects
     :param box_size: length of side of box created by MDUtilities
-    :param cutoff: distance at which r starts  to take zero value
-    :param sigma: reduced unit
-
+    :param cutoff: radius at which we set distance between two particles to zero value
+   
     """
     
     N = len(particle)
@@ -47,17 +46,15 @@ def LJ_potential(particle,box_size,cutoff):
         
         :param particle: list of Particle3D objects
         :param box_size: length of side of box created by MDUtilities
-        :param cutoff:
-        :param sigma: reduced unit
+        :param cutoff: radius at which we set distance between two particles to zero value
 
     """
     N = len(particle)
     potential = 0.0
-# need to apply reduced units here
+    
     for i in range(N):
         for j in range (i+1, N):
         
-        # apply minimum image convention to both (what box size do we use?)
             rij = (particle[i].position - particle[j].position)
             mic_rij = mic(rij,box_size)
             norm_rij = LA.norm(mic_rij)
@@ -73,9 +70,8 @@ def LJ_kinetic(particle):
 
     """
     Calculates total kinetic energy of list of particles
-    :param particle: list of particles
-    :
-    :
+    :param particle: list of Particle3D objects
+    
     """
     N = len(particle)
     new_kinetic = 0
